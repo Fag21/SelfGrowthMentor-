@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Self-Growth Mentor</title>
+   {% load static %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #2e8b57, #556b2f, #fff8dc);
+      color: #fdf6e3;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .sidebar-icon {
+      @apply text-2xl text-white hover:text-yellow-200 transition duration-200;
+    }
+    .growth-bubble {
+      position: absolute;
+      bottom: 0;
+      width: 10px;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: rise 6s infinite ease-in;
+    }
+    @keyframes rise {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-600px); opacity: 0; }
+    }
+    .tree-grow {
+      width: 6px;
+      height: 0;
+      background-color: #556b2f;
+      border-radius: 4px;
+      animation: grow 4s forwards ease-in-out;
+      margin: 0 auto;
+    }
+    @keyframes grow {
+      0% { height: 0; }
+      100% { height: 100px; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col relative overflow-hidden">
+
+  <!-- Floating Growth Bubbles -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="growth-bubble" style="left:10%; animation-delay:0s;"></div>
+    <div class="growth-bubble" style="left:40%; animation-delay:1s;"></div>
+    <div class="growth-bubble" style="left:70%; animation-delay:2s;"></div>
+    <div class="growth-bubble" style="left:90%; animation-delay:3s;"></div>
+  </div>
+
+  <!-- Top Header -->
+  <header class="w-full glass p-4 flex justify-between items-center text-2xl font-semibold text-white tracking-wide shadow-md">
+    <h1>Self-Growth Mentor 🌲</h1>
+    <div class="text-right pr-4">
+      <p class="text-sm">Welcome back, <span class="font-bold">Filebar</span> 👋</p>
+      <p class="text-xs opacity-80">Let’s grow steadily today 🍃</p>
+    </div>
+  </header>
+
+  <div class="flex flex-1">
+
+    <!-- Sidebar -->
+    <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
+      <div class="space-y-8 mt-6">
+        <i class="fa-solid fa-chart-line sidebar-icon" title="Dashboard"></i>
+        <i class="fa-solid fa-fire sidebar-icon" title="Habit Streaks"></i>
+        <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
+        <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
+        <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
+        <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
+      </div>
+      <div>
+        <i class="fa-solid fa-right-from-bracket sidebar-icon" title="Logout"></i>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-24 p-8 space-y-8">
+
+      <!-- Daily Usage Summary -->
+      <section class="glass p-6 rounded-2xl flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-semibold mb-2 text-yellow-100">Today's Screen Time</h2>
+          <p class="text-3xl font-bold text-white">3h 25m</p>
+          <p class="text-sm opacity-80">Daily Limit: <span class="font-semibold text-yellow-200">4h 00m</span></p>
+        </div>
+        <div class="text-right">
+          <h3 class="text-sm opacity-80 mb-1">Time Remaining</h3>
+          <p class="text-2xl font-bold text-yellow-300">35m Left</p>
+        </div>
+      </section>
+
+      <!-- Social Media Usage -->
+      <section class="glass p-6 rounded-2xl max-w-2xl mx-auto">
+        <h2 class="text-lg font-semibold mb-3 text-yellow-100">Social Media Usage</h2>
+        <div class="flex justify-center">
+          <canvas id="socialChart" height="100" width="100"></canvas>
+        </div>
+      </section>
+
+      <!-- Habit Streaks -->
+      <section class="glass p-6 rounded-2xl">
+        <h2 class="text-lg font-semibold mb-3 text-yellow-100">Habit Streaks 🌾</h2>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div class="p-4 bg-white/20 rounded-xl">
+            <h3 class="text-xl font-bold">7</h3>
+            <p class="text-sm">Days Meditation</p>
+          </div>
+          <div class="p-4 bg-white/20 rounded-xl">
+            <h3 class="text-xl font-bold">5</h3>
+            <p class="text-sm">Days Workout</p>
+          </div>
+          <div class="p-4 bg-white/20 rounded-xl">
+            <h3 class="text-xl font-bold">10</h3>
+            <p class="text-sm">Days Reading</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Growth Feed -->
+      <section class="glass p-6 rounded-2xl relative overflow-hidden">
+        <h2 class="text-lg font-semibold mb-3 text-yellow-100">Personalized Growth Feed 🌱</h2>
+        <ul class="space-y-3 text-sm">
+          <li>✨ “Focus on one calm deep work session today.”</li>
+          <li>🔥 “You’re on a 7-day streak — keep your roots strong!”</li>
+          <li>💡 “Reflect on how you grew your mindset this week.”</li>
+        </ul>
+        <div class="mt-6 tree-grow"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- AI Mentor Footer -->
+  <footer class="glass p-4 text-center text-white text-lg fixed bottom-0 left-0 w-full backdrop-blur-lg">
+    🌳 Ask your AI Mentor: <span class="italic">“What’s my next step to grow today?”</span>
+  </footer>
+
+  <script>
+    const ctx = document.getElementById('socialChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Instagram', 'YouTube', 'TikTok', 'Twitter', 'Facebook'],
+        datasets: [{
+          data: [120, 90, 60, 45, 30],
+          backgroundColor: ['#E4405F', '#FF0000', '#010101', '#1DA1F2', '#1877F2'],
+          borderWidth: 2,
+          borderColor: '#fff',
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (ctx) => ctx.parsed + ' mins' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
