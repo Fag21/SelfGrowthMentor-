@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Self-Growth Mentor{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-br from-green-50 to-cornsilk min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-green-800 text-white shadow-lg p-4 flex justify-between items-center">
+        <a href="/" class="text-xl font-semibold tracking-wide">🌱 Self-Growth Mentor</a>
+        <div>
+            {% if user.is_authenticated %}
+                <span class="mr-4">Hi, {{ user.username }}</span>
+                <a href="{% url 'accounts:logout' %}" class="bg-white text-green-700 px-3 py-1 rounded hover:bg-green-100">Logout</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="mr-4 hover:underline">Login</a>
+                <a href="{% url 'accounts:register' %}" class="bg-white text-green-700 px-3 py-1 rounded hover:bg-green-100">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% if messages %}
+<div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+    {% for message in messages %}
+        <div class="mb-2 px-6 py-3 rounded-lg shadow-lg text-white
+            {% if message.tags == 'success' %} bg-green-600 {% elif message.tags == 'error' %} bg-red-600 {% else %} bg-yellow-500 {% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+    <!-- Main Content -->
+    <main class="flex-grow flex justify-center items-center p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-green-900 text-white text-center py-3">
+        <p>© 2025 Self-Growth Mentor | Empower your habits 🌿</p>
+    </footer>
+</body>
+</html>
