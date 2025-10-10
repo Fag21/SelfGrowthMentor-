@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto mt-12">
+  <div class="glass p-6 rounded-2xl">
+    <h3>Delete Habit</h3>
+    <p>Are you sure you want to delete "{{ habit.name }}"?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button class="bg-red-500 text-white px-4 py-2 rounded">Yes, delete</button>
+      <a href="{% url 'habits:dashboard' %}" class="ml-4 px-4 py-2 bg-white/10 rounded">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
