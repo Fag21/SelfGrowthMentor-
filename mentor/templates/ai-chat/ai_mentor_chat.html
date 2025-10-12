@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="chat-container">
+  <div id="chat-box"></div>
+  <input id="user-input" type="text" placeholder="Type your message..." />
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+async function sendMessage() {
+  const message = document.getElementById("user-input").value;
+  const chatBox = document.getElementById("chat-box");
+
+  chatBox.innerHTML += `<div class="user-msg">${message}</div>`;
+  document.getElementById("user-input").value = "";
+
+  const response = await fetch("/ai-chat/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, user_id: "filebar" }),
+  });
+
+  const data = await response.json();
+  chatBox.innerHTML += `<div class="ai-msg">${data.reply}</div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+{% endblock %}
