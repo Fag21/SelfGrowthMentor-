@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}Habits — Self-Growth Mentor{% endblock %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto p-6">
+
+  <!-- Sidebar -->
+  <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
+    <div class="space-y-8 mt-6" id="sidebar-div">
+      <a href="{% url 'habits:dashboard' %}" title="Dashboard">
+         <i class="fa-solid fa-chart-line sidebar-icon" ></i>
+      </a>
+     
+      <a href="{% url 'habits:dashboard' %}" title="Habit Streaks">
+        <i class="fa-solid fa-fire sidebar-icon"></i>
+      </a>
+      <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
+      <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
+      <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
+      <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6 mt-6">
+    <h2 class="text-3xl font-bold text-black">🔥 Habit Streaks</h2>
+    <a href="{% url 'habits:create' %}" class="bg-yellow-400 text-black px-3 py-2 rounded hover:bg-yellow-500">
+      + Add Habit
+    </a>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+    <div>
+      {% for message in messages %}
+        <div class="mb-2 px-4 py-2 rounded {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Active Habits -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for habit in habits %}
+      <div class="rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition duration-200 p-5">
+        <div class="flex justify-between items-center mb-2">
+          <p class="text-sm font-medium text-gray-800">{{ habit.name }}</p>
+
+          {% if not habit.completed_today %}
+            <button 
+              type="button"
+              onclick="toggleCompletion('{{ habit.pk }}')"
+              class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+              Mark Done
+            </button>
+          {% else %}
+            <button class="bg-gray-400 text-white px-3 py-1 rounded cursor-not-allowed">
+              Completed
+            </button>
+          {% endif %}
+        </div>
+
+        <p class="text-xs text-gray-600"><strong>Type:</strong> {{ habit.get_habit_type_display }}</p>
+
+        <div class="mt-2 text-sm text-gray-700">
+          <p><strong>Streak:</strong> {{ habit.current_streak }} days (best {{ habit.best_streak }})</p>
+          <p class="mt-1">{{ habit.reason|truncatechars:120 }}</p>
+          <p class="text-xs opacity-70 mt-2">Plan: {{ habit.plan|truncatechars:140 }}</p>
+        </div>
+
+        <div class="mt-4 flex gap-3 text-sm">
+          <a href="{% url 'habits:detail' habit.pk %}" class="text-green-600 hover:underline">Open</a>
+          <a href="{% url 'habits:edit' habit.pk %}" class="text-yellow-600 hover:underline">Edit</a>
+          <a href="{% url 'habits:delete' habit.pk %}" class="text-red-600 hover:underline">Delete</a>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-gray-700">You have no active habits yet — add one to get started.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Weekly Progress Chart -->
+  <div class="mt-14 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+    <h2 class="text-xl font-semibold mb-4">Your Weekly Progress</h2>
+    <canvas id="habitChart" width="400" height="120"></canvas>
+  </div>
+
+</div>
+
+<!-- JS Section -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // ✅ Toggle habit completion
+  function toggleCompletion(habitpk) {
+    fetch(`/habits/toggle/${habitpk}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    })
+    .then(response => response.json())
+    .then(() => location.reload())
+    .catch(err => console.error(err));
+  }
+
+  // ✅ Render chart from HabitLog real data
+  const ctx = document.getElementById('habitChart');
+  const chartData = JSON.parse('{{ chart_data|escapejs }}');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: chartData,
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      },
+      plugins: {
+        legend: { display: true },
+        title: { display: true, text: 'Habits Completed per Day (Last 7 Days)' }
+      }
+    }
+  });
+</script>
+
+{% endblock %}

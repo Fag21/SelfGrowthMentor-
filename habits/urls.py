@@ -9,6 +9,6 @@ urlpatterns = [
     path('<int:pk>/', views.detail_habit, name='detail'),
     path('<int:pk>/edit/', views.edit_habit, name='edit'),
     path('<int:pk>/delete/', views.delete_habit, name='delete'),
-    path('<int:pk>/toggle/', views.toggle_complete, name='toggle'),
-    path('<int:pk>/api-toggle/', views.api_habit_toggle, name='api_toggle'),
+    path('<int:pk>/toggle/', views.toggle_completion, name='toggle_completion'),
+    
 ]
