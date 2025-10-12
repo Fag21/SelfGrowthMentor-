@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto mt-8 space-y-10">
+
+  <!-- Top Section: Streak & Stats -->
+   
+  <div class="glass2 p-6 rounded-2xl text-center w-100">
+    <h2 class="text-2xl font-semibold">Welcome Back, {{ user.username }} 👋</h2>
+    <p class="text-gray-400 mt-2">You’ve written <b>{{ total_entries }}</b> journals.</p>
+    <p class="text-xl font-semibold mt-4">🔥 Current Streak: <span class="text-orange-400">{{ streak }}</span> days</p>
+    <a href="{% url 'create_journal' %}" class="mt-4 inline-block bg-blue-600 text-white py-2 px-6 rounded-xl hover:bg-blue-700">Write Today’s Journal</a>
+  </div>
+
+  <!-- Horizontal Journal Cards -->
+  <div>
+    <h3 class="text-xl font-semibold mb-3">Recent Journals</h3>
+    <div class="flex space-x-4 overflow-x-auto pb-4">
+      {% for j in recent_journals %}
+      <div class="min-w-[250px] glass1 p-4 rounded-xl flex-shrink-0">
+        <h4 class="font-bold text-lg">{{ j.title }}</h4>
+        <p class="text-sm opacity-70">{{ j.date }}</p>
+        <p class="text-sm mt-1">{{ j.mood|title }}</p>
+        <a href="{% url 'read_journal' j.id %}" class="text-blue-500 hover:underline mt-2 block">Read</a>
+      </div>
+      {% empty %}
+      <p>No journals yet. Start writing today!</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Old Journals (Horizontal Scroll) -->
+  {% if old_journals %}
+  <div>
+    <h3 class="text-xl font-semibold mt-10 mb-3">Old Journals</h3>
+    <div class="flex space-x-4 overflow-x-auto pb-4">
+      {% for j in old_journals %}
+      <div class="min-w-[250px] glass1 p-4 rounded-xl flex-shrink-0">
+        <h4 class="font-bold text-lg">{{ j.title }}</h4>
+        <p class="text-sm opacity-70">{{ j.date }}</p>
+        <a href="{% url 'read_journal' j.id %}" class="text-blue-500 hover:underline mt-2 block">Read</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Weekly Reflection -->
+  {% if reflection %}
+  <div class="glass1 p-6 rounded-2xl text-center bg-green-900/20">
+    <p class="text-lg">{{ reflection }}</p>
+  </div>
+  {% endif %}
+
+  <!-- Chart at the Bottom -->
+  <div class="glass3 p-6 rounded-2xl mt-10">
+    <h3 class="text-lg font-semibold mb-2">Your 7-Day Journal Progress</h3>
+    <canvas id="progressChart"></canvas>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const labels = '{{ chart_labels|safe }}';
+const data = JSON.parse('{{ chart_data|escapejs }}');
+
+const ctx = document.getElementById('progressChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Journal Entries',
+            data: data,
+            backgroundColor: 'rgba(59,130,246,0.5)',
+            borderColor: 'rgba(59,130,246,1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: { y: { beginAtZero: true } }
+    }
+});
+</script>
+
+
+{% endblock %}

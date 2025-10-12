@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 glass1 p-6 rounded-2xl">
+  <h2 class="text-2xl font-semibold mb-4">Write Your Journal</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <label class="block mb-2 text-gray-300">Title</label>
+    <input type="text" name="title" class="w-full p-2 rounded-lg bg-yellow-400 mb-4" required>
+
+    <label class="block mb-2 text-gray-300">Mood</label>
+    <select name="mood" class="w-full p-2 rounded-lg bg-yellow-400 mb-4">
+      <option value="happy">😊 Happy</option>
+      <option value="calm">😌 Calm</option>
+      <option value="sad">😢 Sad</option>
+      <option value="angry">😡 Angry</option>
+      <option value="motivated">💪 Motivated</option>
+    </select>
+
+    <label class="block mb-2 text-gray-300">Content</label>
+    <textarea name="content" rows="7" class="w-full p-3 rounded-lg bg-yellow-400 mb-4" required></textarea>
+
+    <button type="submit" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700">Save Journal</button>
+    <a href="{% url 'dashboard' %}" class="ml-3 text-gray-400 hover:underline">Cancel</a>
+  </form>
+</div>
+{% endblock %}

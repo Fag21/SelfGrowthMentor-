@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 glass1 p-6 rounded-2xl">
+  <h2 class="text-2xl font-bold mb-2">{{ journal.title }}</h2>
+  <p class="text-sm opacity-70 mb-4">{{ journal.date }} • {{ journal.mood|title }}</p>
+  <p class="leading-relaxed text-gray-200">{{ journal.content }}</p>
+  <a href="{% url 'dashboard' %}" class="inline-block mt-6 text-blue-500 hover:underline">← Back to Dashboard</a>
+</div>
+{% endblock %}
