@@ -1,17 +1,21 @@
 <!doctype html>
 <html lang="en">
 <head>
+ 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Self-Growth Mentor</title>
-   {% load static %}
+ {% load static %}
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
   <style>
     body {
-      background: linear-gradient(to bottom right, #2e8b57, #556b2f, #fff8dc);
+      background: linear-gradient(to bottom right, #01796f, #2e8b57, #fff8dc);
       color: #fdf6e3;
+      overflow-y: auto;
+      height: 100vh;
     }
     .glass {
       background: rgba(255, 255, 255, 0.15);
@@ -20,7 +24,12 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
     .sidebar-icon {
-      @apply text-2xl text-white hover:text-yellow-200 transition duration-200;
+      font-size: 1.5rem;
+      color: white;
+      transition: color 0.2s;
+    }
+    .sidebar-icon:hover {
+      color: #facc15;
     }
     .growth-bubble {
       position: absolute;
@@ -38,7 +47,7 @@
     .tree-grow {
       width: 6px;
       height: 0;
-      background-color: #556b2f;
+      background-color: #01796f;
       border-radius: 4px;
       animation: grow 4s forwards ease-in-out;
       margin: 0 auto;
@@ -49,7 +58,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col relative overflow-hidden">
+<body class="min-h-screen flex flex-col relative overflow-y-auto">
 
   <!-- Floating Growth Bubbles -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -59,11 +68,15 @@
     <div class="growth-bubble" style="left:90%; animation-delay:3s;"></div>
   </div>
 
-  <!-- Top Header -->
-  <header class="w-full glass p-4 flex justify-between items-center text-2xl font-semibold text-white tracking-wide shadow-md">
+  <!-- Header -->
+  <header class="w-full glass p-4 flex justify-between items-center text-2xl font-semibold text-white tracking-wide shadow-md sticky top-0 z-10">
     <h1>Self-Growth Mentor 🌲</h1>
     <div class="text-right pr-4">
-      <p class="text-sm">Welcome back, <span class="font-bold">Filebar</span> 👋</p>
+      {% if user.is_authenticated %}
+      <p class="text-sm">Welcome back, <span class="font-bold">{{ user.username }}</span> 👋</p>
+      {% else %}
+      <p class="text-sm"><a href="{% url 'login' %}" class="text-yellow-300 underline">Login</a></p>
+      {% endif %}
       <p class="text-xs opacity-80">Let’s grow steadily today 🍃</p>
     </div>
   </header>
@@ -74,15 +87,13 @@
     <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
       <div class="space-y-8 mt-6">
         <i class="fa-solid fa-chart-line sidebar-icon" title="Dashboard"></i>
-        <i class="fa-solid fa-fire sidebar-icon" title="Habit Streaks"></i>
+       <a href="{% url 'habits:dashboard' %}" title="Habit Streaks"><i class="fa-solid fa-fire sidebar-icon"></i></a>
         <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
         <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
         <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
         <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
       </div>
-      <div>
-        <i class="fa-solid fa-right-from-bracket sidebar-icon" title="Logout"></i>
-      </div>
+     
     </aside>
 
     <!-- Main Content -->
@@ -105,28 +116,37 @@
       <section class="glass p-6 rounded-2xl max-w-2xl mx-auto">
         <h2 class="text-lg font-semibold mb-3 text-yellow-100">Social Media Usage</h2>
         <div class="flex justify-center">
-          <canvas id="socialChart" height="100" width="100"></canvas>
+          <canvas id="socialChart" height="50" width="50"></canvas>
         </div>
       </section>
 
       <!-- Habit Streaks -->
-      <section class="glass p-6 rounded-2xl">
-        <h2 class="text-lg font-semibold mb-3 text-yellow-100">Habit Streaks 🌾</h2>
-        <div class="grid grid-cols-3 gap-4 text-center">
-          <div class="p-4 bg-white/20 rounded-xl">
-            <h3 class="text-xl font-bold">7</h3>
-            <p class="text-sm">Days Meditation</p>
-          </div>
-          <div class="p-4 bg-white/20 rounded-xl">
-            <h3 class="text-xl font-bold">5</h3>
-            <p class="text-sm">Days Workout</p>
-          </div>
-          <div class="p-4 bg-white/20 rounded-xl">
-            <h3 class="text-xl font-bold">10</h3>
-            <p class="text-sm">Days Reading</p>
-          </div>
-        </div>
-      </section>
+ <!-- Habit Streaks -->
+<section class="glass p-6 rounded-2xl">
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="text-lg font-semibold text-yellow-100">Habit Streaks 🌾</h2>
+    <a href="{% url 'habits:dashboard' %}" 
+       class="text-sm text-yellow-300 underline hover:text-yellow-200">
+       View All Habits →
+    </a>
+  </div>
+
+  {% if streaks %}
+  <div class="grid grid-cols-3 gap-4 text-center">
+    {% for habit in streaks %}
+    <div class="p-4 bg-white/20 rounded-xl {% if habit.streak > 7 %}ring-2 ring-yellow-300{% endif %}">
+      <h3 class="text-xl font-bold {% if habit.streak > 7 %}text-yellow-300{% endif %}">
+        {{ habit.streak }}
+      </h3>
+      <p class="text-sm">{{ habit.name }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-center opacity-80">No habits tracked yet 🌱</p>
+  {% endif %}
+</section>
+
 
       <!-- Growth Feed -->
       <section class="glass p-6 rounded-2xl relative overflow-hidden">
@@ -142,19 +162,22 @@
     </main>
   </div>
 
-  <!-- AI Mentor Footer -->
+  <!-- Footer -->
   <footer class="glass p-4 text-center text-white text-lg fixed bottom-0 left-0 w-full backdrop-blur-lg">
     🌳 Ask your AI Mentor: <span class="italic">“What’s my next step to grow today?”</span>
   </footer>
 
-  <script>
+<script>
+fetch("{% url 'social_data_api' %}")
+  .then(response => response.json())
+  .then(data => {
     const ctx = document.getElementById('socialChart').getContext('2d');
     new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Instagram', 'YouTube', 'TikTok', 'Twitter', 'Facebook'],
+        labels: data.labels,
         datasets: [{
-          data: [120, 90, 60, 45, 30],
+          data: data.values,
           backgroundColor: ['#E4405F', '#FF0000', '#010101', '#1DA1F2', '#1877F2'],
           borderWidth: 2,
           borderColor: '#fff',
@@ -167,6 +190,39 @@
         }
       }
     });
-  </script>
+  });
+</script>
+
+<!-- AI Mentor Footer -->
+ <footer class="glass p-4 text-center text-white text-lg fixed bottom-0 left-0 w-full backdrop-blur-lg">
+    <div class="chat-container">
+  <div id="chat-box"></div>
+  <input id="user-input" type="text" placeholder="Type your message..." />
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+async function sendMessage() {
+  const message = document.getElementById("user-input").value;
+  const chatBox = document.getElementById("chat-box");
+
+  chatBox.innerHTML += `<div class="user-msg">${message}</div>`;
+  document.getElementById("user-input").value = "";
+
+  const response = await fetch("/ai-chat/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, user_id: "filebar" }),
+  });
+
+  const data = await response.json();
+  chatBox.innerHTML += `<div class="ai-msg">${data.reply}</div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+  </footer>
+
+
+
 </body>
 </html>
