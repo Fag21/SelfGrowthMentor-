@@ -5,11 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Self-Growth Mentor{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <style> 
+   body {
+      
+      overflow-y: auto;
+      height: 100vh;
+    }
+    .glass1 {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .glass {
+      background: rgb(12, 65, 23);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(205, 239, 13, 0.25);
+      box-shadow: 0 8px 32px rgba(37, 37, 37, 0.2);
+      height: 100vh;
+    }
+    .sidebar-icon {
+      font-size: 1.5rem;
+      color: white;
+      transition: color 0.2s;
+    }
+    .sidebar-icon:hover {
+      color: #facc15;
+    }
+    #main{
+        padding: 40px 0 0 20px;
+    }
+    </style>
 </head>
 
 <body class="bg-gradient-to-br from-green-50 to-cornsilk min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="bg-green-800 text-white shadow-lg p-4 flex justify-between items-center">
+    <nav class="bg-green-800 text-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 w-full ">
         <a href="/" class="text-xl font-semibold tracking-wide">🌱 Self-Growth Mentor</a>
         <div>
             {% if user.is_authenticated %}
@@ -34,7 +66,7 @@
 
 
     <!-- Main Content -->
-    <main class="flex-grow flex justify-center items-center p-6">
+    <main class="flex-grow flex justify-center items-center p-6" id="main">
         {% block content %}{% endblock %}
     </main>
 
@@ -44,3 +76,5 @@
     </footer>
 </body>
 </html>
+
+
