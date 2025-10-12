@@ -16,6 +16,14 @@ INSTALLED_APPS = [
     'accounts',
     'dashboard',
     'mentor',
+    'habits',
+    'growthfeed',
+    'motivation',
+    'quickactions',
+    'journal',
+    'socialusage',
+
+
 ]
 
 MIDDLEWARE = [
@@ -69,4 +77,8 @@ LOGOUT_REDIRECT_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 LOGIN_URL = 'accounts:login'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
 
