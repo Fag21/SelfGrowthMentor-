@@ -12,11 +12,32 @@
       overflow-y: auto;
       height: 100vh;
     }
+    /* Add to your static CSS file */
+
     .glass1 {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.25);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .glass3 {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      height: 500px;
+    }
+    .glass2 {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      width: 1100px;
+      height: 200px;
+      padding-right: 100;
+    }
+    #topnav{
+        z-index: 1;
     }
     .glass {
       background: rgb(12, 65, 23);
@@ -41,7 +62,7 @@
 
 <body class="bg-gradient-to-br from-green-50 to-cornsilk min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="bg-green-800 text-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 w-full ">
+    <nav class="topnav bg-green-800 text-white shadow-lg p-4 flex justify-between items-center fixed top-0 left-0 w-full" id="topnav">
         <a href="/" class="text-xl font-semibold tracking-wide">🌱 Self-Growth Mentor</a>
         <div>
             {% if user.is_authenticated %}
