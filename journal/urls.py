@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('write/', views.create_journal, name='create_journal'),
     path('read/<int:pk>/', views.read_journal, name='read_journal'),
+    path('delete/<int:pk>/', views.delete_journal, name='delete_journal'),
 ]

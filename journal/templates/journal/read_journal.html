@@ -1,9 +1,120 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ journal.title }}{% endblock %}
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10 glass1 p-6 rounded-2xl">
-  <h2 class="text-2xl font-bold mb-2">{{ journal.title }}</h2>
-  <p class="text-sm opacity-70 mb-4">{{ journal.date }} • {{ journal.mood|title }}</p>
-  <p class="leading-relaxed text-gray-200">{{ journal.content }}</p>
-  <a href="{% url 'dashboard' %}" class="inline-block mt-6 text-blue-500 hover:underline">← Back to Dashboard</a>
+
+<div class="max-w-3xl mx-auto mt-8 text-center relative">
+  <!-- Journal Card -->
+  <div id="journalCard" class="glass1 p-8 rounded-2xl relative overflow-hidden transition-all duration-700">
+    <h2 class="text-3xl font-bold mb-3">{{ journal.title }}</h2>
+    <p class="text-sm opacity-70 mb-4">{{ journal.date }}</p>
+    <p class="leading-relaxed text-lg">{{ journal.content }}</p>
+    <div class="mt-8 p-6 bg-gray-800/30 border border-gray-600 rounded-2xl">
+    <h3 class="text-xl font-semibold mb-2 text-amber-400">AI Mentor Reflection ✨</h3>
+    <p class="text-gray-100 leading-relaxed">{{ mentor_message }}</p>
+    </div>
+    <!-- Burn Button -->
+    <button id="burnBtn" class="mt-6 bg-gradient-to-r from-red-700 to-orange-600 text-white py-3 px-8 rounded-full hover:scale-105 transition-all shadow-md">
+      🔥 Burn & Release
+    </button>
+
+    <!-- Hidden Delete Form -->
+    <form id="deleteForm" action="{% url 'delete_journal' journal.id %}" method="POST" class="hidden">
+  {% csrf_token %}
+</form>
+
+
+    <!-- Fire Overlay -->
+    <div id="flameOverlay" class="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-2000"></div>
+  </div>
+
+  <!-- Release Message -->
+  <p id="releaseMessage" class="hidden text-lg mt-8 text-gray-300 italic fade-in">✨ Your thoughts have been released to the wind ✨</p>
+
+  <!-- Crackling Sound -->
+  <audio id="fireSound" src="{% static 'sounds/fire_crackle.mp3' %}" preload="auto"></audio>
 </div>
+
+<!-- Flame Particle Style -->
+<style>
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-150px) scale(0.5);
+    opacity: 0;
+  }
+}
+.flame-particle {
+  position: absolute;
+  bottom: 0;
+  width: 10px;
+  height: 20px;
+  background: radial-gradient(ellipse at center, #ffb347, #ffcc33, transparent);
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: rise 2s ease-out forwards;
+}
+</style>
+
+<!-- Burn Script -->
+<script>
+const burnBtn = document.getElementById('burnBtn');
+const card = document.getElementById('journalCard');
+const deleteForm = document.getElementById('deleteForm');
+const flameOverlay = document.getElementById('flameOverlay');
+const releaseMessage = document.getElementById('releaseMessage');
+const fireSound = document.getElementById('fireSound');
+
+burnBtn.addEventListener('click', () => {
+  burnBtn.disabled = true;
+
+  // Start crackle sound
+  fireSound.play();
+
+  // Add glowing overlay
+  flameOverlay.style.background = 'radial-gradient(circle at center, rgba(255,100,0,0.6), rgba(0,0,0,0.8))';
+  flameOverlay.classList.remove('opacity-0');
+  flameOverlay.classList.add('opacity-90');
+
+  // Create fire particles
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'flame-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (1 + Math.random()) + 's';
+    flameOverlay.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
+  }
+
+  // Burn & fade effect
+  card.classList.add('scale-105');
+  setTimeout(() => { card.style.filter = 'blur(3px) brightness(0.7)'; }, 500);
+  setTimeout(() => { card.style.opacity = '0'; }, 2500);
+
+  // Fade out sound and show message
+  setTimeout(() => {
+    fireSound.volume = 0.3;
+    releaseMessage.classList.remove('hidden');
+    releaseMessage.classList.add('fade-in');
+  }, 3000);
+
+  // Delete after animation (4s)
+  setTimeout(() => { deleteForm.submit(); }, 4000);
+});
+</script>
+
+<!-- Fade-in Style -->
+<style>
+.fade-in {
+  animation: fadeIn 1.2s ease-in forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
 {% endblock %}

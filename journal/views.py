@@ -1,11 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+from selfgrowthmentor import settings
 from .models import Journal
 from datetime import date, timedelta
 from django.contrib.auth.decorators import login_required
 import json
+from mentor.utils import get_ai_reflection
+
 from django.shortcuts import render
 from .models import Journal
 from datetime import date, timedelta
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Journal
+import google.generativeai as genai
+from django.shortcuts import render
+from .models import Journal
+
+genai.configure(api_key="AIzaSyAvoEaywWZvObSVVYqbQdkVi4ZA5irtFtI")
 @login_required
 def dashboard(request):
     journals = Journal.objects.filter(user=request.user).order_by('-date')
@@ -26,16 +38,63 @@ def dashboard(request):
 
 
 @login_required
+# journal/views.py
+
 def create_journal(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        mood = request.POST.get('mood')
-        Journal.objects.create(user=request.user, title=title, content=content, mood=mood)
+        title = request.POST['title']
+        content = request.POST['content']
+        journal = Journal.objects.create(user=request.user, title=title, content=content)
+
+        # 💬 Get AI Reflection
+        reflection = get_ai_reflection(content)
+        journal.reflection = reflection
+        journal.save()
+
+        messages.success(request, "Journal added and mentor reflected 🌿")
         return redirect('dashboard')
+
     return render(request, 'journal/create_journal.html')
 
-@login_required
+
+
+genai.configure(api_key=settings.GEMINI_API_KEY)
+
 def read_journal(request, pk):
-    journal = get_object_or_404(Journal, id=pk, user=request.user)
-    return render(request, 'journal/read_journal.html', {'journal': journal})
+    journal = get_object_or_404(Journal, pk=pk)
+
+    # Generate mentor reflection
+    mentor_message = None
+    try:
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        prompt = f"""
+        You are a gentle, wise AI mentor. Read this journal entry and give a 3–5 sentence reflection that feels kind, insightful, and motivating.
+        Journal:
+        {journal.content}
+        """
+        response = model.generate_content(prompt)
+        mentor_message = response.text
+    except Exception as e:
+        mentor_message = "Your mentor is thinking deeply... please try again later."
+
+    return render(request, "journal/read_journal.html", {
+        "journal": journal,
+        "mentor_message": mentor_message
+    })
+
+
+
+def delete_journal(request, pk):
+    try:
+        journal = Journal.objects.get(pk=pk)
+    except Journal.DoesNotExist:
+        messages.warning(request, "That journal was already released 🌬️")
+        return redirect('dashboard')
+
+    if request.method == "POST":
+        journal.delete()
+        messages.success(request, "Your journal has been released to the wind 🌬️")
+        return redirect('dashboard')
+
+    return redirect('read_journal', pk=pk)
+

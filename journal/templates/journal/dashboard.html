@@ -12,21 +12,43 @@
   </div>
 
   <!-- Horizontal Journal Cards -->
-  <div>
-    <h3 class="text-xl font-semibold mb-3">Recent Journals</h3>
-    <div class="flex space-x-4 overflow-x-auto pb-4">
+ <!-- Horizontal Journal Cards with Scroll -->
+<div>
+  <h3 class="text-xl font-semibold mb-3">Recent Journals</h3>
+
+  <div class="relative">
+    <!-- Left Scroll Button -->
+    <button id="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800/60 hover:bg-gray-800 text-white rounded-full p-2 z-10">
+      &#10094;
+    </button>
+
+    <!-- Scrollable Container -->
+    <div id="journalScroll" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth">
       {% for j in recent_journals %}
       <div class="min-w-[250px] glass1 p-4 rounded-xl flex-shrink-0">
         <h4 class="font-bold text-lg">{{ j.title }}</h4>
         <p class="text-sm opacity-70">{{ j.date }}</p>
         <p class="text-sm mt-1">{{ j.mood|title }}</p>
+        <p class="mt-2">{{ journal.content|truncatewords:20 }}</p>
+
+
         <a href="{% url 'read_journal' j.id %}" class="text-blue-500 hover:underline mt-2 block">Read</a>
       </div>
       {% empty %}
       <p>No journals yet. Start writing today!</p>
       {% endfor %}
     </div>
+
+    <!-- Right Scroll Button -->
+    <button id="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-800/60 hover:bg-gray-800 text-white rounded-full p-2 z-10">
+      &#10095;
+    </button>
   </div>
+</div>
+
+<!-- Scroll Script -->
+
+
 
   <!-- Old Journals (Horizontal Scroll) -->
   {% if old_journals %}
@@ -81,6 +103,15 @@ new Chart(ctx, {
         scales: { y: { beginAtZero: true } }
     }
 });
+</script>
+<script>
+const scrollContainer = document.getElementById('journalScroll');
+document.getElementById('scrollLeft').onclick = () => {
+  scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
+};
+document.getElementById('scrollRight').onclick = () => {
+  scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+};
 </script>
 
 
