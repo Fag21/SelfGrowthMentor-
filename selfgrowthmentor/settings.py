@@ -1,4 +1,7 @@
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +25,7 @@ INSTALLED_APPS = [
     'quickactions',
     'journal',
     'socialusage',
-
+    'django_crontab'
 
 ]
 
@@ -80,5 +83,12 @@ LOGIN_URL = 'accounts:login'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+CRONJOBS = [
+    ('0 8 * * *', 'motivation.tasks.notify_deadlines'),  # every morning at 8 AM
+]
+
 
 

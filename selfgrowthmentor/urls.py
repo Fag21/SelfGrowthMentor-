@@ -6,7 +6,9 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('mentor/', include('mentor.urls')),
-     path('journal/', include('journal.urls')),
+    path('journal/', include('journal.urls')),
     path('habits/', include(('habits.urls', 'habits'), namespace='habits')),
+   path('growthfeed/', include('growthfeed.urls', namespace='growthfeed')),
+    path('motivation/', include('motivation.urls', namespace='motivation')),
 
 ]
