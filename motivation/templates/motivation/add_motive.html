@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Add Motive{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 glass1 p-6 rounded-xl">
+  <h2 class="text-xl font-semibold mb-4">Add New Motive</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full mt-3">
+      Save Motive
+    </button>
+  </form>
+</div>
+{% endblock %}
