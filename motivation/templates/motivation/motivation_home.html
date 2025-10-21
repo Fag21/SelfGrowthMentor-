@@ -4,6 +4,17 @@
 {% block content %}
 <div class="max-w-4xl mx-auto mt-10">
   <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
+      <div class="space-y-8 mt-6">
+        <i class="fa-solid fa-chart-line sidebar-icon" title="Dashboard"></i>
+       <a href="{% url 'habits:dashboard' %}" title="Habit Streaks"><i class="fa-solid fa-fire sidebar-icon"></i></a>
+        <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
+        <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
+        <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
+        <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
+      </div>
+     
+    </aside>
+  <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
     <div class="space-y-8 mt-6" id="sidebar-div">
       <a href="{% url 'habits:dashboard' %}" title="Dashboard">
          <i class="fa-solid fa-chart-line sidebar-icon" ></i>
