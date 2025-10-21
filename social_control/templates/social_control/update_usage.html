@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto mt-10 glass1 p-6 rounded-2xl">
+  <h2 class="text-xl font-semibold mb-4">Add Time for {{ account.platform }}</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <label>Minutes Used:</label>
+    <input type="number" name="minutes" class="w-full mb-3 p-2 border rounded" required>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+  </form>
+</div>
+{% endblock %}

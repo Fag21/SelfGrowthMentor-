@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Social Media Control{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10">
+  <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
+      <div class="space-y-8 mt-6">
+        <i class="fa-solid fa-chart-line sidebar-icon" title="Dashboard"></i>
+       <a href="{% url 'habits:dashboard' %}" title="Habit Streaks"><i class="fa-solid fa-fire sidebar-icon"></i></a>
+        <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
+        <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
+        <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
+        <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
+      </div>
+     
+    </aside>
+  <div class="glass1 p-6 rounded-2xl">
+    <h2 class="text-2xl font-semibold mb-4">📱 Your Social Media Usage</h2>
+    <a href="{% url 'add_account' %}" class="bg-blue-500 text-white px-4 py-2 rounded">Add Account</a>
+
+    <div class="mt-6 space-y-4">
+      {% for acc in accounts %}
+        <div class="p-4 rounded-lg bg-white/20">
+          <h3 class="font-semibold">{{ acc.platform }}</h3>
+          <p>Time Spent Today: {{ acc.time_spent_today }} min / {{ acc.daily_limit_minutes }} min</p>
+          <div class="w-full bg-gray-300 rounded-full h-3 mt-2">
+            <div class="bg-blue-600 h-3 rounded-full" style="width: {{ acc.time_spent_today|divisibleby:acc.daily_limit_minutes|floatformat:2 }}%"></div>
+          </div>
+          <a href="{% url 'update_usage' acc.id %}" class="text-blue-400">+ Add Time</a>
+        </div>
+      {% empty %}
+        <p>No accounts added yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
