@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Exercise{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto mt-16 text-center space-y-8">
+  <h1 class="text-3xl font-semibold text-red-600">💪 Quick Exercise Routine</h1>
+  <p class="text-gray-600">Move your body! Complete these 3 sets to energize your day.</p>
+
+  <ul class="text-left text-gray-700 space-y-3">
+    <li>✅ 10 Push-ups</li>
+    <li>✅ 15 Squats</li>
+    <li>✅ 30-Second Plank</li>
+  </ul>
+
+  <div class="mt-6">
+    <progress id="progressBar" value="0" max="3" class="w-full h-3 rounded bg-gray-200"></progress>
+    <p class="text-sm text-gray-500 mt-2" id="progressText">0 / 3 completed</p>
+  </div>
+
+  <button id="nextBtn" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700">Mark Next Completed</button>
+  <a href="{% url 'growthfeed:actions' %}" class="block mt-6 text-red-500 hover:underline">← Back to Actions</a>
+</div>
+
+<script>
+let count = 0;
+const nextBtn = document.getElementById("nextBtn");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+
+nextBtn.onclick = () => {
+  if (count < 3) count++;
+  progressBar.value = count;
+  progressText.innerText = `${count} / 3 completed`;
+  if (count === 3) {
+    nextBtn.disabled = true;
+    nextBtn.innerText = "Done!";
+  }
+};
+</script>
+{% endblock %}

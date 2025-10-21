@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Meditation{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto text-center mt-16 space-y-6">
+  <h1 class="text-3xl font-semibold text-blue-700">🧘 Meditation Session</h1>
+  <p class="text-gray-600">Relax and focus on your breathing. Inhale... exhale...</p>
+
+  <div id="timer" class="text-6xl font-bold text-blue-600 mt-6">05:00</div>
+
+  <button id="startBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Start</button>
+  <a href="{% url 'growthfeed:actions' %}" class="block mt-6 text-blue-500 hover:underline">← Back to Actions</a>
+</div>
+
+<script> 
+let time = 300; // 5 minutes
+let interval;
+const timerDisplay = document.getElementById('timer');
+const startBtn = document.getElementById('startBtn');
+
+startBtn.onclick = () => {
+  clearInterval(interval);
+  interval = setInterval(() => {
+    if (time <= 0) {
+      clearInterval(interval);
+      timerDisplay.innerText = "Done!";
+      return;
+    }
+    time--;
+    const minutes = Math.floor(time / 60);
+    const seconds = String(time % 60).padStart(2, "0");
+    timerDisplay.innerText = `${minutes}:${seconds}`;
+  }, 1000);
+};
+</script>
+{% endblock %}

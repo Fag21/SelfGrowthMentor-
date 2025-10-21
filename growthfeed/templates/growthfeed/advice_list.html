@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-8">
+  <h1 class="text-3xl font-semibold mb-4">AI Advices</h1>
+
+  <!-- Category Filter -->
+  <form method="get" class="mb-6">
+    <select name="category" onchange="this.form.submit()" 
+            class="border rounded-md p-2 text-sm">
+      <option value="all" {% if selected_category == 'all' %}selected{% endif %}>All</option>
+      {% for value, label in categories %}
+        <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <div class="space-y-4">
+    {% for advice in advices %}
+    <div class="p-4 border rounded-xl hover:shadow transition bg-white">
+      <p class="text-gray-700">{{ advice.text }}</p>
+      <div class="text-xs text-gray-400 mt-2">
+        {{ advice.category|title }} • {{ advice.created_at|date:"M d, Y" }}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">No advice available yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

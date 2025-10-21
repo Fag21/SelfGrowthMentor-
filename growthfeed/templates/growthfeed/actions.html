@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}Actions{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10 px-4 space-y-10">
+
+  <!-- 🧭 Page Title -->
+  <div class="text-center">
+    <h1 class="text-3xl font-semibold mb-2">Your Growth Actions</h1>
+    <p class="text-gray-600">Choose one or all actions below to build your personal growth routine.</p>
+  </div>
+  <div class="text-center mt-10">
+  <a href="{% url 'growthfeed:meditation' %}" class="text-blue-600 hover:underline mx-2">Meditation</a> |
+  <a href="{% url 'growthfeed:exercise' %}" class="text-red-600 hover:underline mx-2">Exercise</a> |
+  <a href="{% url 'growthfeed:custom_action' %}" class="text-green-600 hover:underline mx-2">Custom</a>
+</div>
+
+
+  <!-- ✨ Action Choices -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <div class="glass1 p-6 rounded-2xl text-center bg-gradient-to-br from-blue-500 to-indigo-500 text-blak">
+      <h2 class="text-xl font-semibold mb-2">🧘 Meditation</h2>
+      <p class="text-sm opacity-90 mb-4">Calm your mind and connect within.</p>
+      <button onclick="selectAction('meditation')" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100">Start Meditation</button>
+    </div>
+
+    <div class="glass1 p-6 rounded-2xl text-center bg-gradient-to-br from-red-500 to-pink-500 text-black">
+      <h2 class="text-xl font-semibold mb-2">💪 Exercise</h2>
+      <p class="text-sm opacity-90 mb-4">Move your body and gain strength.</p>
+      <button onclick="selectAction('exercise')" class="bg-white text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100">Start Exercise</button>
+    </div>
+
+    <div class="glass1 p-6 rounded-2xl text-center bg-gradient-to-br from-green-500 to-emerald-500 text-black">
+      <h2 class="text-xl font-semibold mb-2">📝 Custom</h2>
+      <p class="text-sm opacity-90 mb-4">Create your own spiritual or self-growth action.</p>
+      <button onclick="toggleCustomForm()" class="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100">Create Custom</button>
+    </div>
+  </div>
+
+  <!-- ✍️ Create Custom Action Form -->
+  <form id="customActionForm" method="POST" class="hidden bg-white shadow-md rounded-2xl p-6 mt-8">
+    {% csrf_token %}
+    <h3 class="text-xl font-semibold mb-4">Create Custom Action</h3>
+    <textarea name="description" rows="3" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-400 focus:outline-none" placeholder="Describe your custom action..."></textarea>
+    <input type="hidden" name="action_type" value="custom">
+    <div class="mt-4 flex justify-end">
+      <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700">Save</button>
+    </div>
+  </form>
+
+  <!-- 📋 User’s Recent Actions -->
+  <div class="glass1 p-6 rounded-2xl bg-white shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Your Recent Actions</h2>
+    {% if actions %}
+      <div class="space-y-3">
+        {% for action in actions %}
+        <div class="border rounded-xl p-4 hover:shadow-sm bg-gray-50 transition">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              {% if action.action_type == 'exercise' %}
+                <span class="text-red-500 text-lg">💪</span>
+              {% elif action.action_type == 'meditation' %}
+                <span class="text-blue-500 text-lg">🧘‍♂️</span>
+              {% else %}
+                <span class="text-green-500 text-lg">📝</span>
+              {% endif %}
+              <h3 class="font-semibold capitalize">{{ action.action_type }}</h3>
+            </div>
+            <p class="text-xs text-gray-400">{{ action.created_at|date:"M d, Y" }}</p>
+          </div>
+          {% if action.description %}
+          <p class="text-gray-600 text-sm mt-2">{{ action.description }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500">You haven’t created any actions yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- 🧩 JavaScript -->
+<script>
+function selectAction(type) {
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.innerHTML = `
+    {% csrf_token %}
+    <input type="hidden" name="action_type" value="${type}">
+    <input type="hidden" name="description" value="${type.charAt(0).toUpperCase() + type.slice(1)} session started.">
+  `;
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function toggleCustomForm() {
+  const form = document.getElementById("customActionForm");
+  form.classList.toggle("hidden");
+}
+</script>
+{% endblock %}

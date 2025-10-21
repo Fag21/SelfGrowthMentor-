@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Book Section{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto mt-8">
+
+  <h1 class="text-3xl font-semibold mb-4">📚 Self-Development Books</h1>
+
+  <!-- Search -->
+  <form method="get" class="mb-6">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search books..."
+           class="w-full p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500">
+  </form>
+
+  <!-- Book List -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {% for book in books %}
+      <div class="glass1 rounded-2xl p-4 shadow hover:shadow-lg transition">
+        {% if book.cover_image %}
+          <img src="{{ book.cover_image }}" alt="{{ book.title }}" class="rounded-lg mb-3 w-full h-48 object-cover">
+        {% endif %}
+        <h2 class="font-semibold text-lg">{{ book.title }}</h2>
+        <p class="text-sm text-gray-600">{{ book.author }}</p>
+        <p class="text-sm text-gray-500 mt-2 line-clamp-3">{{ book.description|truncatewords:25 }}</p>
+        <a href="{{ book.file_url }}" target="_blank"
+           class="inline-block mt-4 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md">Read Now</a>
+        <button 
+          class="favorite-btn mt-2 px-3 py-1 rounded-md text-white bg-yellow-500 hover:bg-yellow-600"
+          data-id="{{ book.id }}" data-type="book">
+          ❤️ Favorite
+        </button>
+      </div>
+    {% empty %}
+      <p class="text-gray-500">No books found.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

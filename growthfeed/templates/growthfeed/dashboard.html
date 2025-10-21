@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 px-4 space-y-10">
+ <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
+      <div class="space-y-8 mt-6">
+        <i class="fa-solid fa-chart-line sidebar-icon" title="Dashboard"></i>
+       <a href="{% url 'habits:dashboard' %}" title="Habit Streaks"><i class="fa-solid fa-fire sidebar-icon"></i></a>
+        <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
+        <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
+        <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
+        <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
+      </div>
+     
+    </aside>
+  <!-- 🌟 AI Advice Section -->
+  <div class="glass4 p-6 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-black shadow-lg">
+    <div class="flex justify-between items-start">
+      <div>
+        <h2 class="text-2xl font-semibold mb-2">AI Growth Advice</h2>
+        <p class="text-sm opacity-90">{{ advice }}</p>
+      </div>
+      <a href="{% url 'growthfeed:advice_list' %}" 
+         class="bg-white/20 hover:bg-white/30 text-black text-sm px-3 py-1 rounded-md transition">
+        See All →
+      </a>
+    </div>
+  </div>
+
+  <!-- 📚 Books Section -->
+  <div class="glass1 p-6 rounded-2xl bg-white shadow-md">
+    <div class=" justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Your Books</h2>
+      <a href="{% url 'growthfeed:book_section' %}" class="text-blue-600 hover:text-blue-800 font-medium">Go to Book Section →</a>
+    </div>
+
+    {% if books %}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {% for book in books %}
+        <div class="border rounded-xl p-4 hover:shadow-md transition bg-gray-50">
+          {% if book.cover_image %}
+          <img src="{{ book.cover_image }}" class="w-full h-48 object-cover rounded-lg mb-3" alt="{{ book.title }}">
+          {% endif %}
+          <h3 class="font-semibold text-lg">{{ book.title }}</h3>
+          <p class="text-sm text-gray-600 mb-2">by {{ book.author }}</p>
+          <a href="{{ book.file_url }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">📖 Read</a>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500">You haven’t started any books yet.</p>
+    {% endif %}
+
+    <!-- ⭐ Favorite Books -->
+    <h2 class="text-xl font-semibold mt-6">⭐ Your Favorite Books</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+      {% for book in fav_books %}
+      <div class="glass1 p-3 rounded-xl">
+        <h3 class="font-semibold">{{ book.title }}</h3>
+        <a href="{{ book.file_url }}" class="text-indigo-500 hover:underline text-sm">Read</a>
+      </div>
+      {% empty %}
+      <p>No favorite books yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- ⭐ Favorite Videos -->
+    <h2 class="text-xl font-semibold mt-6">⭐ Your Favorite Videos</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+      {% for video in fav_videos %}
+      <div class="glass1 p-3 rounded-xl">
+        <h3 class="font-semibold">{{ video.title }}</h3>
+        <a href="{{ video.youtube_url }}" class="text-red-500 hover:underline text-sm">Watch</a>
+      </div>
+      {% empty %}
+      <p>No favorite videos yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- 🎥 Videos Section -->
+  <div class="glass1 p-6 rounded-2xl bg-white shadow-md">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Recent Videos</h2>
+      <a href="{% url 'growthfeed:video_section' %}" class="text-blue-600 hover:text-blue-800 font-medium">Go to Video Section →</a>
+    </div>
+
+    {% if videos %}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {% for video in videos %}
+        <div class="border rounded-xl p-3 hover:shadow-md bg-gray-50 transition">
+          <iframe class="w-full rounded-lg" height="200"
+            src="https://www.youtube.com/embed/{{ video.youtube_url|cut:'https://www.youtube.com/watch?v=' }}"
+            allowfullscreen></iframe>
+          <h3 class="font-semibold text-md mt-2">{{ video.title }}</h3>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500">No videos watched yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- ⚡ Actions Section -->
+  <div class="glass1 p-6 rounded-2xl bg-white shadow-md">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Your Actions</h2>
+      <div class="flex gap-3">
+        <a href="{% url 'growthfeed:actions' %}" class="text-blue-600 hover:text-blue-800 font-medium">Go to Action Section →</a>
+        <a href="{% url 'growthfeed:custom_action' %}" class="text-sm bg-indigo-500 text-white px-3 py-1 rounded-md hover:bg-indigo-600">
+          + Create Action
+        </a>
+      </div>
+    </div>
+
+    {% if actions %}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {% for action in actions %}
+        <div class="border rounded-xl p-4 bg-gray-50 hover:shadow-md transition">
+          <div class="flex items-center gap-2 mb-2">
+            {% if action.action_type == 'exercise' %}
+              <span class="text-red-500 text-xl">💪</span>
+            {% elif action.action_type == 'meditation' %}
+              <span class="text-blue-500 text-xl">🧘‍♂️</span>
+            {% else %}
+              <span class="text-green-500 text-xl">📝</span>
+            {% endif %}
+            <h3 class="font-semibold capitalize">{{ action.action_type }}</h3>
+          </div>
+          <p class="text-gray-600 text-sm">{{ action.description|truncatewords:20 }}</p>
+          <p class="text-xs text-gray-400 mt-2">Created on {{ action.created_at|date:"M d, Y" }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-500">No actions yet. Start by choosing one in your Action Section.</p>
+    {% endif %}
+  </div>
+
+  <!-- 📈 Performance Chart -->
+  <div class="glass1 p-6 rounded-2xl bg-white shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Your Weekly Performance</h2>
+    <canvas id="performanceChart" height="100"></canvas>
+  </div>
+</div>
+
+<!-- 🧭 Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('performanceChart');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ chart_data.labels|safe }},
+      datasets: [{
+        label: 'Growth Score',
+        data: {{ chart_data.values|safe }},
+        borderWidth: 2,
+        borderColor: '#4f46e5',
+        backgroundColor: 'rgba(79,70,229,0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}
