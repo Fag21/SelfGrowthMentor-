@@ -63,7 +63,7 @@
 
         <div class="mt-2 text-sm text-gray-700">
           <p><strong>Streak:</strong> {{ habit.current_streak }} days (best {{ habit.best_streak }})</p>
-          <p class="mt-1">{{ habit.reason|truncatechars:120 }}</p>
+          <p class="mt-1">{{ habit.reason|truncatechars:60 }}</p>
           <p class="text-xs opacity-70 mt-2">Plan: {{ habit.plan|truncatechars:140 }}</p>
         </div>
 
