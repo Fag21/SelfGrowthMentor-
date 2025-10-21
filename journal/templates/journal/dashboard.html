@@ -3,7 +3,17 @@
 <div class="max-w-6xl mx-auto mt-8 space-y-10">
 
   <!-- Top Section: Streak & Stats -->
-   
+   <aside class="w-20 glass p-4 flex flex-col items-center justify-between fixed top-16 left-0 h-[calc(100%-4rem)]">
+      <div class="space-y-8 mt-6">
+        <i class="fa-solid fa-chart-line sidebar-icon" title="Dashboard"></i>
+       <a href="{% url 'habits:dashboard' %}" title="Habit Streaks"><i class="fa-solid fa-fire sidebar-icon"></i></a>
+        <i class="fa-solid fa-seedling sidebar-icon" title="Growth Feed"></i>
+        <i class="fa-solid fa-book sidebar-icon" title="Journal"></i>
+        <i class="fa-solid fa-heart sidebar-icon" title="Motivation Meter"></i>
+        <i class="fa-solid fa-bolt sidebar-icon" title="Quick Actions"></i>
+      </div>
+     
+    </aside>
   <div class="glass2 p-6 rounded-2xl text-center w-100">
     <h2 class="text-2xl font-semibold">Welcome Back, {{ user.username }} 👋</h2>
     <p class="text-gray-400 mt-2">You’ve written <b>{{ total_entries }}</b> journals.</p>
