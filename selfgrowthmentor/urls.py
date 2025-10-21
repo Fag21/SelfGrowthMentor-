@@ -10,5 +10,6 @@ urlpatterns = [
     path('habits/', include(('habits.urls', 'habits'), namespace='habits')),
    path('growthfeed/', include('growthfeed.urls', namespace='growthfeed')),
     path('motivation/', include('motivation.urls', namespace='motivation')),
+    path('social/', include('social_control.urls')),
 
 ]

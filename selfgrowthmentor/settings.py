@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'motivation',
     'quickactions',
     'journal',
-    'socialusage',
+    'social_control',
     'django_crontab'
 
 ]
@@ -89,6 +89,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 CRONJOBS = [
     ('0 8 * * *', 'motivation.tasks.notify_deadlines'),  # every morning at 8 AM
 ]
+CRONJOBS = [
+    ('0 0 * * *', 'social_control.cron.reset_daily_usage'),
+]
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'filebarag@gmail.com'
+EMAIL_HOST_PASSWORD = 'somc xpjf pixi kmgd'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
