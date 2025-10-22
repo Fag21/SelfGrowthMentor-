@@ -1,7 +1,7 @@
 # mentor/utils.py
 import openai
 
-openai.api_key = "AIzaSyAvoEaywWZvObSVVYqbQdkVi4ZA5irtFtI"  # ideally load from settings
+openai.api_key = ""  # ideally load from settings
 
 def get_ai_reflection(content):
     prompt = f"""
